@@ -1,0 +1,28 @@
+import React, { useReducer } from "react"
+
+/* 引数 = 初期値 */
+var reducerFunc = (countState, action) => {
+    if (action === "add") {
+        return countState + 1;
+    } else {
+        return countState;
+    } 
+}
+
+var SidebarComponent = () => {
+
+    /* useReducerの実行結果を分割代入 dispatchに0を代入しているわけではない */
+    var [count, dispatch] = useReducer(reducerFunc, 0);
+
+    return (
+        <div id="sidebar">
+            <input type="button" onClick={() => dispatch("add")} />
+            <span class="sidebarElement">アイテム1</span>
+            <span class="sidebarElement">アイテム2</span>
+            <span class="sidebarElement">{count}</span>
+        </div>
+    )
+
+}
+
+export default SidebarComponent;
