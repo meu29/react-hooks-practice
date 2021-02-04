@@ -19,11 +19,26 @@ var AppComponent = () => {
 
     var [loginState, setLoginState] = useState(false);
 
+    var login = (childComponentFormValue) => {
+        Axios.post("http://localhost:5000/login", childComponentFormValue)
+        .then((res) => {
+            if (res.data.message === "ログインに成功") {
+                setLoginState(true);
+            } else {
+                setLoginState(false);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            setLoginState(false);
+        });
+    }
+
     return (
         <div>
             <HeaderComponent />
             <div class="flexWrap">
-                <SidebarComponent loginState={loginState}/>
+                <SidebarComponent loginState={loginState} parentLoginFunc={login}/>
                 <MainComponent />
             </div>
         </div>
