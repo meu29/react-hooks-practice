@@ -15,6 +15,7 @@ cursor.execute("create table events (eventId text, title text, description text,
 cursor.execute("create table logs (userId text, eventId text, flag int)")
 
 cursor.execute("insert into users values ('@testbot', 'password', 'hogefuga@gmail.com', 'まんち')")
+cursor.execute("insert into users values ('@oonishi', 'aiueo', 'oonishi123@gmail.com', 'オオニシ')")
 cursor.execute("insert into events values ('dWGHQtF_Lp', 'ようこそ', '機能について説明します', 0)")
 cursor.execute("insert into logs values ('@testbot', 'dWGHQtF_Lp', 1)")
     

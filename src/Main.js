@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react"
 import Axios from "axios"
 
-var MainComponent = () => {
+var MainComponent = (props) => {
 
     var [eventDatas, setEventDatas] = useState([]);
-    var [formValues, setFormValues] = useState({title: "", description: ""})
+    var [formValues, setFormValues] = useState({title: "", description: ""});
 
     /* componentDidMountを関数コンポーネントでやりたいときに使う */
     /* 第二引数に空の配列を渡すことでマウントとアンマウント時のみ実行 */
@@ -27,7 +27,7 @@ var MainComponent = () => {
         var body = {
             title: formValues.title,
             description: formValues.description,
-            userId: "@testbot",
+            userId: props.userDataState[0],
             eventId: Math.random().toString(32).substring(2),
             flag: 1
         }
@@ -39,8 +39,18 @@ var MainComponent = () => {
 
     var participateEvent = (eventId) => {
 
-        Axios.post("http://localhost:5000/events", {userId: "@testbot", eventId: eventId, flag: 0})
+        Axios.post("http://localhost:5000/events", {userId: props.userDataState[0], eventId: eventId, flag: 0})
         .then((res) => alert("ok"));
+
+    }
+
+    var cancelParticipateEvent = (eventId, organizerId) => {
+
+        alert(organizerId)
+        /*
+        Axios.post("http://localhost:5000/events", {userId: props.userDataState[0], eventId: eventId, flag: 0})
+        .then((res) => alert("ok"));
+        */
 
     }
 
@@ -52,8 +62,9 @@ var MainComponent = () => {
                     return (
                         <div>
                             <h3>{arr[1]}</h3>
-                            <p>{arr[2]}</p>
+                            <p>{arr}</p>
                             <input type="button" value="このイベントに参加する" onClick={() => participateEvent(arr[0])}/>
+                            <input type="button" value="参加をキャンセル" onClick={() => cancelParticipateEvent(arr[0], arr[4])}/>
                         </div>
                     );
                 })}

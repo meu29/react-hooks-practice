@@ -20,6 +20,10 @@ def after_request(res):
 
 @app.route("/login", methods = ["POST"])
 def login():
+
+    #ブラウザをリロードするとセッションが消える
+    if "userId" in session and "password" in session:
+        return make_response(json.dumps({"message": "ログインに成功"}))
     
     connection = sqlite3.connect("db.sqlite")
     cursor = connection.cursor()
@@ -31,37 +35,40 @@ def login():
     if len(users) == 1:
         session["userId"] = request.json["userId"]
         session["password"] = request.json["password"]
-        return make_response(json.dumps({"message": "ログインに成功"}))
+        return make_response(json.dumps({"message": "ログインに成功", "userData": users[0]}))
     else:
-        return make_response(json.dumps({"message": "ログインに失敗"}))
+        return make_response(json.dumps({"message": "ログインに失敗", "userData": []}))
 
-@app.route("/session", methods = ["GET"])
-def checkSession():
+@app.route("/logout", methods = ["GET"])
+def logout():
 
-    if "userId" in session and "password" in session:
-        return make_response(json.dumps({"loginState": True}))
-    else:
-        return make_response(json.dumps({"loginState": False}))
+    session.pop("userId", None)
+    session.pop("password", None)
+    return make_response(json.dumps({"message": "ログアウトに成功"}))
 
 @app.route("/events", methods = ["GET", "POST"])
 def getEvents():
-    
+
     connection = sqlite3.connect("db.sqlite")
     cursor = connection.cursor()
 
-    if request.method == "POST" and request.json["flag"] == 1:
+    if request.method == "POST" and "flag" not in request.json:
+        cursor.execute("delete from logs where eventId = ?", (request.json["eventId"]))
+    elif request.method == "POST" and request.json["flag"] == 1:
         cursor.execute("insert into events values (?, ?, ?, 0)", (request.json["eventId"], request.json["title"], request.json["description"]))
         cursor.execute("insert into logs values (?, ?, 1)", (request.json["userId"], request.json["eventId"]))
     elif request.method == "POST" and request.json["flag"] == 0:
         cursor.execute("insert into logs values (?, ?, 0)", (request.json["userId"], request.json["eventId"]))
-    
-    events = [row for row in cursor.execute("select * from events")]
-    print(events)
-    queries = request.query_string.decode().split("&")
+
+    #改行するとエラー
+    query = "select events.eventId, events.title, events.description, events.likes, logs.userId, logs.eventId, logs.flag from events inner join logs on events.eventId = logs.eventId" 
+    events = [row for row in cursor.execute(query)]
+    #queries = request.query_string.decode().split("&")
     
     connection.commit()
     connection.close()
     return make_response(json.dumps({"events": events}))
+
 '''
 @app.route("/user", methods = ["GET", "POST"])
 def getUserData():
@@ -74,6 +81,5 @@ def getUserData():
     connection.commit()
     connection.close()
 '''
-
 if __name__ == "__main__":
     app.run(debug = True)
