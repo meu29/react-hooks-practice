@@ -39,10 +39,8 @@ var MainComponent = () => {
 
     var participateEvent = (eventId) => {
 
-        alert(eventId);
-
-        //Axios.post("http://localhost:5000/events", {userId: "@testbot", eventId: eventId, flag: 0})
-        //.then((res) => alert("ok"));
+        Axios.post("http://localhost:5000/events", {userId: "@testbot", eventId: eventId, flag: 0})
+        .then((res) => alert("ok"));
 
     }
 

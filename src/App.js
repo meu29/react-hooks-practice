@@ -17,14 +17,15 @@ var loginCheck = () => {
 
 var AppComponent = () => {
 
-    var [appState, setAppState] = useState({loginState: false});
+    var [loginState, setLoginState] = useState(false);
 
     return (
         <div>
             <HeaderComponent />
-            <SidebarComponent loginState={appState.loginState} />
-            <MainComponent />
-            {/*<input type="button" onClick={loginCheck} />*/}
+            <div class="flexWrap">
+                <SidebarComponent loginState={loginState}/>
+                <MainComponent />
+            </div>
         </div>
     )
 }

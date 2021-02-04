@@ -8,7 +8,9 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "hogehoge" #なんでもよい ないとセッションでエラー
 
-#サーバー側で許可
+#connection = sqlite3.connect("db.sqlite")とcursor = connection.cursor()は関数ごとに書かないとエラー
+
+#サーバー側でリクエストを許可
 @app.after_request
 def after_request(res):
   res.headers.add("Access-Control-Allow-Origin", "*")
@@ -21,7 +23,6 @@ def login():
     
     connection = sqlite3.connect("db.sqlite")
     cursor = connection.cursor()
-    cursor.execute("create table if not exists users(userId text, password text, mailAdress text)")
 
     users = [row for row in cursor.execute("select * from users where userId = ? and password = ?", (request.json["userId"], request.json["password"]))]
     connection.commit()
@@ -47,10 +48,7 @@ def getEvents():
     
     connection = sqlite3.connect("db.sqlite")
     cursor = connection.cursor()
-    cursor.execute("create table if not exists events (eventId text, title text, description text, likes int)")
-    #flagはそのユーザーIDがイベントの主催者かどうか 真偽値型がないので0と1で表現
-    cursor.execute("create table if not exists logs (userId text, eventId text, flag int)")
-    
+
     if request.method == "POST" and request.json["flag"] == 1:
         cursor.execute("insert into events values (?, ?, ?, 0)", (request.json["eventId"], request.json["title"], request.json["description"]))
         cursor.execute("insert into logs values (?, ?, 1)", (request.json["userId"], request.json["eventId"]))
@@ -58,14 +56,24 @@ def getEvents():
         cursor.execute("insert into logs values (?, ?, 0)", (request.json["userId"], request.json["eventId"]))
     
     events = [row for row in cursor.execute("select * from events")]
-    
-    if len(events) == 0:
-        cursor.execute("insert into events values ('dWGHQtF_Lp', 'ようこそ', '機能について説明します', 0)")
-        cursor.execute("insert into logs values ('@testbot', 'dWGHQtF_Lp', 1)")
+    print(events)
+    queries = request.query_string.decode().split("&")
     
     connection.commit()
     connection.close()
     return make_response(json.dumps({"events": events}))
+'''
+@app.route("/user", methods = ["GET", "POST"])
+def getUserData():
+
+    connection = sqlite3.connect("db.sqlite")
+    cursor = connection.cursor()
+
+    "select users.userId, users.userName logsfrom "
+
+    connection.commit()
+    connection.close()
+'''
 
 if __name__ == "__main__":
     app.run(debug = True)

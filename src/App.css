@@ -27,5 +27,10 @@ body {
 }
 
 #sidebar {
-    
+    border: solid silver 1px;
+    padding: 5%;
+}
+
+.flexWrap {
+    display: flex;
 }
