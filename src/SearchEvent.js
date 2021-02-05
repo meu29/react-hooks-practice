@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Axios from "axios"
 
-var MainComponent = (props) => {
+var SearchEventComponent = (props) => {
 
     var [eventDatas, setEventDatas] = useState([]);
     var [formValues, setFormValues] = useState({title: "", description: ""});
@@ -44,16 +44,6 @@ var MainComponent = (props) => {
 
     }
 
-    var cancelParticipateEvent = (eventId, organizerId) => {
-
-        alert(organizerId)
-        /*
-        Axios.post("http://localhost:5000/events", {userId: props.userDataState[0], eventId: eventId, flag: 0})
-        .then((res) => alert("ok"));
-        */
-
-    }
-
     /* [イベントID, タイトル, 説明, いいね] */
     return (
         <div>
@@ -61,10 +51,11 @@ var MainComponent = (props) => {
                 {eventDatas.map((arr) => {
                     return (
                         <div>
+                            <img src={`${process.env.PUBLIC_URL}/no_image_yoko.jpeg`} />
                             <h3>{arr[1]}</h3>
-                            <p>{arr}</p>
-                            <input type="button" value="このイベントに参加する" onClick={() => participateEvent(arr[0])}/>
-                            <input type="button" value="参加をキャンセル" onClick={() => cancelParticipateEvent(arr[0], arr[4])}/>
+                            <p>{arr[2]}</p>
+                            <input type="button" value="このイベントに参加する" onClick={() => participateEvent(arr[0])} />
+                            <input type="button" value="いいね" /><span>{arr[3]}</span>
                         </div>
                     );
                 })}
@@ -79,4 +70,4 @@ var MainComponent = (props) => {
     )
 }
 
-export default MainComponent;
+export default SearchEventComponent;

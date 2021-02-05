@@ -8,13 +8,13 @@ var SidebarComponent = (props) => {
 
     return (
         <div id="sidebar">
-            {props.loginState === true && (
+            {props.userDataState.length > 0 && (
                 <>
                     <p class="sidebarElement">{props.userDataState}</p>
                     <input type="button" value="ログアウト" onClick={() => props.parentLogoutFunc()} />
                 </>
             )}
-            {props.loginState === false && (
+            {props.userDataState.length == 0 && (
                 <>
                     <p><input type="text" placeholder="ユーザーID" onKeyUp={(e) => setFormValue({userId: e.target.value, password: formValue.password})}/></p>
                     <p><input type="password" placeholder="パスワード" onKeyUp={(e) => setFormValue({userId: formValue.userId, password: e.target.value})}/></p>
